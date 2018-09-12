@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dat256volvoproject.dat256_volvoproject">
+    package="com.semcon.oil.carpoc">
+
+    <uses-permission android:name="android.car.permission.CAR_HVAC" />
+    <uses-permission android:name="android.car.permission.CAR_SPEED" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.car.permission.CAR_FUEL" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

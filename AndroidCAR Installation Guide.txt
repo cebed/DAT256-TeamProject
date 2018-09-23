@@ -2,7 +2,7 @@
 2. Create the JAVA_HOME environment variable by following the instructions here: https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html
 3. Open File Explorer, go to C:\Users\YOUR_USERNAME\AppData\Local\Android\Sdk\system-images\
 4. Unpack rice-android-27.zip in that directory
-5. Start Command Prompt. Go to C:\Users\DITT_USERNAME\AppData\Local\Android\Sdk\tools\bin
+5. Start Command Prompt. Go to C:\Users\YOUR_USERNAME\AppData\Local\Android\Sdk\tools\bin
 6. Run avdmanager create avd -n AndroidCAR -k "system-images;rice-android-27;default;x86_64"
 7. Open config.ini that is located in android-car-v1. Replace ‘android-28’ with ‘rice-android-27’
 8. Copy config.ini to C:\Users\YOUR_USERNAME\.android\avd\AndroidCAR.avd\ Replace config.ini that is located there.

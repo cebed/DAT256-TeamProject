@@ -1,9 +1,0 @@
-1. Installera Java JDK om du inte redan har
-2. Skapa JAVA_HOME variabeln genom att följa instruktionerna här: https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html 
-3. Öppna Filhanteraren, gå till C:\Users\DITT_USERNAME\AppData\Local\Android\Sdk\system-images\
-4. Packa upp rice-android-27.zip där
-5. Starta Command Prompt. Gå till C:\Users\DITT_USERNAME\AppData\Local\Android\Sdk\tools\bin
-6. Kör avdmanager create avd -n AndroidCAR -k "system-images;rice-android-27;default;x86_64"
-7. Öppna config.ini som finns i android-car-v1. Ersätt ‘android-28’ med ‘rice-android-27’
-8. Kopiera config.ini till C:\Users\DITT_USERNAME\.android\avd\AndroidCAR.avd\ Skriv över den config.ini som finns där.
-9. Starta Android Studio, tryck på knappen AVD Manager. AndroidCAR bör nu finnas där.

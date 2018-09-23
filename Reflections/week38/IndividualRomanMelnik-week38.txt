@@ -1,0 +1,11 @@
+- what do I want to learn or understand better?
+The most urgent thing I need to learn is to use SimPy in order to simulate signals from the car.
+
+- how can I help someone else, or the entire team, to learn something new?
+I can solve problems, such as getting the AndroidCAR virtual device to install and work properly. Then I can write a guide and push it to GitHub, so that the other team members who may have problems can find the solution easily.
+
+- what is my contribution towards the team’s application of Scrum?
+I have helped the team to formulate our user stories and plan the upcoming sprints.
+
+- what is my contribution towards the team’s deliveries?
+I have managed to install AndroidCAR virtual device, which took more effort than I could imagine. Then I helped my team members by writing an installation guide and pushing it to GitHub.

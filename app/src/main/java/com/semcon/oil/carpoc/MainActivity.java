@@ -2,6 +2,8 @@ package com.semcon.oil.carpoc;
 import android.car.hardware.CarPropertyValue;
 import android.car.hardware.CarSensorEvent;
 import android.car.hardware.CarSensorManager;
+import android.car.hardware.CarVendorExtensionManager;
+import android.car.hardware.cabin.CarCabinManager;
 import android.car.hardware.hvac.CarHvacManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -28,12 +30,16 @@ public class MainActivity extends AppCompatActivity {
     ServiceConnection serviceConnection;
     CarSensorManager sensorManager;
     CarHvacManager carHvacManager;
+    CarVendorExtensionManager carVendorExtensionManager;
+    CarCabinManager carCabinManager;
 
     CarSensorManager.OnSensorChangedListener ignitionStateChangedListener;
-    /* CarSensorManager.OnSensorChangedListener testStateChanged; */
     CarSensorManager.OnSensorChangedListener gearMonitor;
     CarSensorManager.OnSensorChangedListener speedMonitor;
+    CarSensorManager.OnSensorChangedListener rpmMonitor;
+    CarSensorManager.OnSensorChangedListener beltMonitor;
 
+    CarCabinManager.CarCabinEventCallback beltChangedListener;
     CarHvacManager.CarHvacEventCallback carHvacEventCallback;
 
     private static final int speedDataPermissionMagicNumber = 42;
@@ -50,23 +56,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openMain2Activity();
-
             }
         });
-    }
-    public void openMain2Activity () {
-        Intent intent = new Intent(this, Main2Activity.class);
-        startActivity(intent);
-
-
-        /*
-        testStateChanged = new CarSensorManager.OnSensorChangedListener() {
-            @Override
-            public void onSensorChanged(CarSensorEvent carSensorEvent) {
-                Log.d("CAR", "Speed changed event...");
-            }
-        };
-        */
 
         gearMonitor = new CarSensorManager.OnSensorChangedListener() {
             @Override
@@ -92,6 +83,18 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        rpmMonitor = new CarSensorManager.OnSensorChangedListener() {
+            @Override
+            public void onSensorChanged(CarSensorEvent carSensorEvent) {
+                Log.d("CAR", "RPM event...");
+
+                CarSensorEvent.RpmData rpmData = carSensorEvent.getRpmData(null);
+
+                TextView t = findViewById(R.id.mainText);
+                t.append("\nNew RPM: " + rpmData.rpm + " at: " + rpmData.timestamp);
+            }
+        };
+
         ignitionStateChangedListener = new CarSensorManager.OnSensorChangedListener() {
             @Override
             public void onSensorChanged(CarSensorEvent carSensorEvent) {
@@ -105,47 +108,102 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        /*
-VEHICLEPROPERTY_DRIVING_STATUS = 0x11400404
-VEHICLEPROPERTY_NIGHT_MODE = 0x11200407
-x VEHICLEPROPERTY_IGNITION_STATE = 0x11400409
+        beltMonitor = new CarSensorManager.OnSensorChangedListener() {
+            @Override
+            public void onSensorChanged(CarSensorEvent carSensorEvent) {
+                CarSensorEvent.CarAbsActiveData absActiveData = carSensorEvent.getCarAbsActiveData(null);
+                TextView t = findViewById(R.id.mainText);
 
-x VEHICLEPROPERTY_HVAC_FAN_SPEED = 0x12400500
-x VEHICLEPROPERTY_HVAC_FAN_DIRECTION = 0x12400501
-x VEHICLEPROPERTY_HVAC_TEMPERATURE_SET = 0x12600503
-x VEHICLEPROPERTY_HVAC_DEFROSTER = 0x13200504
-VEHICLEPROPERTY_HVAC_AC_ON = 0x12200505
-VEHICLEPROPERTY_HVAC_RECIRC_ON = 0x12200508
-VEHICLEPROPERTY_HVAC_AUTO_ON = 0x1220050a
-x VEHICLEPROPERTY_HVAC_POWER_ON = 0x12200510
+                Log.d("TAG", "Belt 1 changed to: " +
+                        absActiveData.absIsActive);
+                t.append("\nBelt 1 changed to: " +
+                        absActiveData.absIsActive);
+            }
+        };
 
-VEHICLEPROPERTY_ENV_OUTSIDE_TEMPERATURE = 0x11600703
-VEHICLEPROPERTY_DISPLAY_BRIGHTNESS = 0x11400a01
-VEHICLEPROPERTY_DOOR_LOCK = 0x16200b02
-         */
+        beltChangedListener = new CarCabinManager.CarCabinEventCallback() {
+            @Override
+            public void onChangeEvent(CarPropertyValue carPropertyValue) {
+                Log.d("TAG", "Cabin onChangeEvent with ID: " + carPropertyValue.getPropertyId());
+                TextView t = findViewById(R.id.mainText);
+
+                switch (carPropertyValue.getPropertyId()) {
+                    case CarCabinManager.ID_SEAT_BELT_BUCKLED:
+                        Log.d("TAG", "Belt 1 changed to: " +
+                                carPropertyValue.getValue());
+                        t.append("\nBelt 1 changed to: " +
+                                carPropertyValue.getValue());
+                        break;
+                    case CarCabinManager.ID_DOOR_LOCK:
+                        Log.d("TAG", "Belt 5 changed to: " +
+                                carPropertyValue.getValue());
+                        t.append("\nBelt 5 changed to: " +
+                                carPropertyValue.getValue());
+                        break;
+                    case CarCabinManager.ID_WINDOW_LOCK:
+                        Log.d("TAG", "Belt 3 changed to: " + carPropertyValue
+                                .getValue());
+                        t.append("\nBelt 3 changed to: " +
+                                carPropertyValue.getValue());
+                        break;
+                    case CarCabinManager.ID_MIRROR_LOCK:
+                        Log.d("TAG", "Belt 4 changed to: " + carPropertyValue
+                                .getValue());
+                        t.append("\nBelt 4 changed to: " +
+                                carPropertyValue.getValue());
+                        break;
+                    case CarCabinManager.ID_MIRROR_FOLD:
+                        Log.d("TAG", "Belt 5 changed to: " + carPropertyValue
+                                .getValue());
+                        t.append("\nBelt 5 changed to: " +
+                                carPropertyValue.getValue());
+                        break;
+                }
+            }
+
+            @Override
+            public void onErrorEvent(int i, int i1) {
+
+            }
+        };
 
         carHvacEventCallback = new CarHvacManager.CarHvacEventCallback() {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
-               // Log.d("CAR", "HVAC property changed " + carPropertyValue.toString());
+                //Log.d("CAR", "HVAC property changed " + carPropertyValue.toString());
                 TextView t = findViewById(R.id.mainText);
 
                 switch (carPropertyValue.getPropertyId() ) {
-                    case CarHvacManager.ID_ZONED_FAN_SPEED_SETPOINT:
-                        t.append("\nFan speed setpoint: " + carPropertyValue.getValue());
-                    break;
-                    case CarHvacManager.ID_ZONED_FAN_POSITION:
-                        t.append("\nFan direction or positgearion: " + carPropertyValue.getValue());
+                    case CarHvacManager.ID_ZONED_HVAC_AUTO_RECIRC_ON:
+                        Log.d("TAG", "Belt 1 changed to: " +
+                                carPropertyValue.getValue());
+                        t.append("\nBelt 1 changed to: " +
+                                carPropertyValue.getValue());
                         break;
-                    case CarHvacManager.ID_ZONED_TEMP_SETPOINT:
-                        t.append("\nTemperature setpoint: " + carPropertyValue.getValue());
-                    break;
+                    case CarHvacManager.ID_ZONED_AC_ON:
+                        Log.d("TAG", "Belt 2 changed to: " +
+                                carPropertyValue.getValue());
+                        t.append("\nBelt 2 changed to: " +
+                                carPropertyValue.getValue());
+                        break;
+                    case CarHvacManager.ID_ZONED_AUTOMATIC_MODE_ON:
+                        Log.d("TAG", "Belt 3 changed to: " +
+                                carPropertyValue.getValue());
+                        t.append("\nBelt 3 changed to: " +
+                                carPropertyValue.getValue());
+                        break;
                     case CarHvacManager.ID_ZONED_HVAC_POWER_ON:
-                        t.append("\nPower on: " + carPropertyValue.getValue());
-                    break;
-                    case 0x5001: // Not included in the HVAC properties0x11600207
-                        t.append("\nDefroster on: " + carPropertyValue.getValue());
-                    break;
+                        Log.d("TAG", "Belt 4 changed to: " +
+                                carPropertyValue.getValue());
+                        t.append("\nBelt 4 changed to: " +
+                                carPropertyValue.getValue());
+                         break;
+                    case CarHvacManager.ID_ZONED_AIR_RECIRCULATION_ON:
+                        Log.d("TAG", "Belt 5 changed to: " +
+                                carPropertyValue.getValue());
+                        t.append("\nBelt 5 changed to: " +
+                                carPropertyValue.getValue());
+                        break;
                 }
 
             }
@@ -177,22 +235,48 @@ VEHICLEPROPERTY_DOOR_LOCK = 0x16200b02
                     // connect
                     sensorManager = (CarSensorManager) car.getCarManager(Car.SENSOR_SERVICE);
                     carHvacManager = (CarHvacManager) car.getCarManager(Car.HVAC_SERVICE);
+                    carVendorExtensionManager = (CarVendorExtensionManager) car.getCarManager(Car
+                            .VENDOR_EXTENSION_SERVICE);
+                    carCabinManager = (CarCabinManager) car.getCarManager(Car.CABIN_SERVICE);
 
                     // report connections
                     if (sensorManager != null)
                         Log.d("CAR","Sensor manager received connected");
                     if (carHvacManager != null)
                         Log.d("CAR", "HVAC manager received connected");
+                    if (carVendorExtensionManager != null)
+                        Log.d("CAR","carVendor manager received connected");
+                    if (carCabinManager != null)
+                        Log.d("CAR", "cabin manager received connected");
 
                     // hook up handlers
                     carHvacManager.registerCallback(carHvacEventCallback);
+
+                    carVendorExtensionManager.registerCallback(new CarVendorExtensionManager.CarVendorExtensionCallback() {
+                        @Override
+                        public void onChangeEvent(CarPropertyValue carPropertyValue) {
+                            Log.d("TAG", "Vendor extension onChangeEvent: " + carPropertyValue
+                                    .toString());
+                        }
+
+                        @Override
+                        public void onErrorEvent(int i, int i1) {
+
+                        }
+                    });
+
+                    carCabinManager.registerCallback(beltChangedListener);
 
                     sensorManager.registerListener(ignitionStateChangedListener,
                             CarSensorManager.SENSOR_TYPE_IGNITION_STATE,
                             CarSensorManager.SENSOR_RATE_NORMAL);
 
-                    sensorManager.registerListener(gearMonitor,
+                    /*sensorManager.registerListener(gearMonitor,
                             CarSensorManager.SENSOR_TYPE_GEAR,
+                            CarSensorManager.SENSOR_RATE_NORMAL);
+
+                    sensorManager.registerListener(rpmMonitor,
+                            CarSensorManager.SENSOR_TYPE_RPM,
                             CarSensorManager.SENSOR_RATE_NORMAL);
 
                     if (useSpeedData) {
@@ -201,10 +285,7 @@ VEHICLEPROPERTY_DOOR_LOCK = 0x16200b02
                                 CarSensorManager.SENSOR_RATE_NORMAL);
                     } else {
                         Log.d("CAR", "speedMonitor not registering...");
-                    }
-
-                    /*sensorManager.registerListener(testStateChanged, CarSensorManager.SENSOR_TYPE_RPM, CarSensorManager.SENSOR_RATE_NORMAL);*/
-
+                    }*/
                 } catch (CarNotConnectedException e) {
                     e.printStackTrace();
                 }
@@ -225,9 +306,7 @@ VEHICLEPROPERTY_DOOR_LOCK = 0x16200b02
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                          String permissions[],
-                                          int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (requestCode == speedDataPermissionMagicNumber
                 && ContextCompat.checkSelfPermission(this, Car.PERMISSION_SPEED)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -239,4 +318,10 @@ VEHICLEPROPERTY_DOOR_LOCK = 0x16200b02
 
     }
 
+    public void openMain2Activity () {
+        Intent intent = new Intent(this, Main2Activity.class);
+        startActivity(intent);
+    }
+
 }
+

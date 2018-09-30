@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="home">Home</string>
+    <string name="hello_oil">Hello Oil!</string>
+    <string name="store">store</string>
 </resources>

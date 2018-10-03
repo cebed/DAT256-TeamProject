@@ -1,11 +1,5 @@
 package com.semcon.oil.carpoc;
-import android.car.hardware.CarPropertyValue;
-import android.car.hardware.CarSensorEvent;
-import android.car.hardware.CarSensorManager;
-import android.car.hardware.CarVendorExtensionManager;
-import android.car.hardware.cabin.CarCabinManager;
-import android.car.hardware.hvac.CarHvacManager;
-import android.content.ComponentName;
+
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -24,13 +18,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.car.hardware.CarPropertyValue;
+import android.car.hardware.CarSensorEvent;
+import android.car.hardware.CarSensorManager;
+import android.car.hardware.CarVendorExtensionManager;
+import android.car.hardware.cabin.CarCabinManager;
+import android.car.hardware.hvac.CarHvacManager;
+import android.content.ComponentName;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private Button button;
+    private static int count = 0;
     Car car;
+   // CounterSingleton Csingleton;
     Handler handler;
     ServiceConnection serviceConnection;
     CarSensorManager sensorManager;
@@ -68,6 +72,38 @@ public class MainActivity extends AppCompatActivity {
                 openMain2Activity();
             }
         });
+
+
+
+        final TextView textView = (TextView)findViewById(R.id.mainText);
+
+        Thread t= new Thread(){
+            @Override
+            public void run(){
+                while(!isInterrupted()){
+
+                    try{
+                        Thread.sleep(1000);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CounterSingleton c =  CounterSingleton.getInstance();
+                                count = c.getCounter();
+                                //count++;
+                                textView.setText(String.valueOf(count));
+                            }
+                        });
+                    }
+                    catch(InterruptedException e){
+                        e.printStackTrace();}
+                }
+            }
+        };
+        t.start();
+
+
+
 
         gearMonitor = new CarSensorManager.OnSensorChangedListener() {
             @Override
@@ -164,7 +200,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onErrorEvent(int i, int i1) {
+            public void onErrorEvent
+                    (int i, int i1) {
 
             }
         };

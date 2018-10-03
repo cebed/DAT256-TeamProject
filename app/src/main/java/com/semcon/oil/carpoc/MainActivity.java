@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -21,7 +22,11 @@ import android.car.*;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private Button button;
@@ -37,19 +42,24 @@ public class MainActivity extends AppCompatActivity {
     CarSensorManager.OnSensorChangedListener gearMonitor;
     CarSensorManager.OnSensorChangedListener speedMonitor;
     CarSensorManager.OnSensorChangedListener rpmMonitor;
-    CarSensorManager.OnSensorChangedListener beltMonitor;
 
     CarCabinManager.CarCabinEventCallback beltChangedListener;
     CarHvacManager.CarHvacEventCallback carHvacEventCallback;
 
     private static final int speedDataPermissionMagicNumber = 42;
+    private static final int NUM_SEATS = 4;
     boolean useSpeedData = false;
+    private static List<Boolean> seatBelts;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        seatBelts = new ArrayList<>();
+        for (int i = 0; i < NUM_SEATS; i++)
+            seatBelts.add(false);
 
         button = (Button) findViewById(R.id.button2);
         button.setOnClickListener(new View.OnClickListener() {
@@ -108,56 +118,48 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        beltMonitor = new CarSensorManager.OnSensorChangedListener() {
-            @Override
-            public void onSensorChanged(CarSensorEvent carSensorEvent) {
-                CarSensorEvent.CarAbsActiveData absActiveData = carSensorEvent.getCarAbsActiveData(null);
-                TextView t = findViewById(R.id.mainText);
-
-                Log.d("TAG", "Belt 1 changed to: " +
-                        absActiveData.absIsActive);
-                t.append("\nBelt 1 changed to: " +
-                        absActiveData.absIsActive);
-            }
-        };
-
         beltChangedListener = new CarCabinManager.CarCabinEventCallback() {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
                 Log.d("TAG", "Cabin onChangeEvent with ID: " + carPropertyValue.getPropertyId());
                 TextView t = findViewById(R.id.mainText);
+                ImageView i = findViewById(R.id.carImageView);
+                boolean updated = false;
+                boolean beltBuckled = false;
+                if (carPropertyValue.getValue() instanceof Boolean)
+                    beltBuckled = (boolean) carPropertyValue.getValue();
 
                 switch (carPropertyValue.getPropertyId()) {
-                    case CarCabinManager.ID_SEAT_BELT_BUCKLED:
-                        Log.d("TAG", "Belt 1 changed to: " +
-                                carPropertyValue.getValue());
-                        t.append("\nBelt 1 changed to: " +
-                                carPropertyValue.getValue());
-                        break;
                     case CarCabinManager.ID_DOOR_LOCK:
-                        Log.d("TAG", "Belt 5 changed to: " +
+                        Log.d("TAG", "Belt 4 changed to: " +
                                 carPropertyValue.getValue());
-                        t.append("\nBelt 5 changed to: " +
-                                carPropertyValue.getValue());
-                        break;
-                    case CarCabinManager.ID_WINDOW_LOCK:
-                        Log.d("TAG", "Belt 3 changed to: " + carPropertyValue
-                                .getValue());
-                        t.append("\nBelt 3 changed to: " +
-                                carPropertyValue.getValue());
-                        break;
-                    case CarCabinManager.ID_MIRROR_LOCK:
-                        Log.d("TAG", "Belt 4 changed to: " + carPropertyValue
-                                .getValue());
                         t.append("\nBelt 4 changed to: " +
                                 carPropertyValue.getValue());
+                        updated = true;
+                        seatBelts.set(3, beltBuckled);
                         break;
-                    case CarCabinManager.ID_MIRROR_FOLD:
-                        Log.d("TAG", "Belt 5 changed to: " + carPropertyValue
-                                .getValue());
-                        t.append("\nBelt 5 changed to: " +
-                                carPropertyValue.getValue());
-                        break;
+                }
+                if (updated) {
+                    int nPassengers = getNumPassengers();
+                    Log.d("CAR", "num passengers: " + nPassengers);
+                    t.append("\nNumber of passengers: " + nPassengers);
+                    switch (nPassengers) {
+                        case 0:
+                            i.setImageDrawable(getDrawable(R.mipmap.car_0));
+                            break;
+                        case 1:
+                            i.setImageDrawable(getDrawable(R.mipmap.car_1));
+                            break;
+                        case 2:
+                            i.setImageDrawable(getDrawable(R.mipmap.car_2));
+                            break;
+                        case 3:
+                            i.setImageDrawable(getDrawable(R.mipmap.car_3));
+                            break;
+                        case 4:
+                            i.setImageDrawable(getDrawable(R.mipmap.car_4));
+                            break;
+                    }
                 }
             }
 
@@ -172,38 +174,59 @@ public class MainActivity extends AppCompatActivity {
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
                 //Log.d("CAR", "HVAC property changed " + carPropertyValue.toString());
                 TextView t = findViewById(R.id.mainText);
+                ImageView i = findViewById(R.id.carImageView);
+                boolean beltBuckled = false;
+                if (carPropertyValue.getValue() instanceof Boolean)
+                    beltBuckled = (boolean) carPropertyValue.getValue();
 
+                boolean updated = false;
                 switch (carPropertyValue.getPropertyId() ) {
-                    case CarHvacManager.ID_ZONED_HVAC_AUTO_RECIRC_ON:
+                    case CarHvacManager.ID_ZONED_AC_ON:
                         Log.d("TAG", "Belt 1 changed to: " +
                                 carPropertyValue.getValue());
                         t.append("\nBelt 1 changed to: " +
                                 carPropertyValue.getValue());
+                        updated = true;
+                        seatBelts.set(0, beltBuckled);
                         break;
-                    case CarHvacManager.ID_ZONED_AC_ON:
+                    case CarHvacManager.ID_ZONED_AUTOMATIC_MODE_ON:
                         Log.d("TAG", "Belt 2 changed to: " +
                                 carPropertyValue.getValue());
                         t.append("\nBelt 2 changed to: " +
                                 carPropertyValue.getValue());
+                        updated = true;
+                        seatBelts.set(1, beltBuckled);
                         break;
-                    case CarHvacManager.ID_ZONED_AUTOMATIC_MODE_ON:
+                    case CarHvacManager.ID_ZONED_HVAC_POWER_ON:
                         Log.d("TAG", "Belt 3 changed to: " +
                                 carPropertyValue.getValue());
                         t.append("\nBelt 3 changed to: " +
                                 carPropertyValue.getValue());
-                        break;
-                    case CarHvacManager.ID_ZONED_HVAC_POWER_ON:
-                        Log.d("TAG", "Belt 4 changed to: " +
-                                carPropertyValue.getValue());
-                        t.append("\nBelt 4 changed to: " +
-                                carPropertyValue.getValue());
+                        updated = true;
+                        seatBelts.set(2, beltBuckled);
                          break;
-                    case CarHvacManager.ID_ZONED_AIR_RECIRCULATION_ON:
-                        Log.d("TAG", "Belt 5 changed to: " +
-                                carPropertyValue.getValue());
-                        t.append("\nBelt 5 changed to: " +
-                                carPropertyValue.getValue());
-                        break;
+                }
+                if (updated) {
+                    int nPassengers = getNumPassengers();
+                    Log.d("CAR", "num passengers: " + nPassengers);
+                    t.append("\nNumber of passengers: " + nPassengers);
+                    switch (nPassengers) {
+                        case 0:
+                            i.setImageDrawable(getDrawable(R.mipmap.car_0));
+                            break;
+                        case 1:
+                            i.setImageDrawable(getDrawable(R.mipmap.car_1));
+                            break;
+                        case 2:
+                            i.setImageDrawable(getDrawable(R.mipmap.car_2));
+                            break;
+                        case 3:
+                            i.setImageDrawable(getDrawable(R.mipmap.car_3));
+                            break;
+                        case 4:
+                            i.setImageDrawable(getDrawable(R.mipmap.car_4));
+                            break;
+                    }
                 }
 
             }
@@ -316,6 +339,13 @@ public class MainActivity extends AppCompatActivity {
             Log.d("CAR", "Permission NOT granted to use speed events.");
         }
 
+    }
+
+    public static int getNumPassengers() {
+        int nPassengers = 0;
+        for (boolean belt: seatBelts)
+            nPassengers += belt ? 1 : 0;
+        return nPassengers;
     }
 
     public void openMain2Activity () {

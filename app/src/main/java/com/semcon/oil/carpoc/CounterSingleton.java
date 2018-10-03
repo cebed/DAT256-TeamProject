@@ -24,6 +24,8 @@ class CounterSingleton
         }
         return single_instance;
     }
+
+    //Returns current trips score
     public int getCounter(){
 
         return counter;
@@ -37,10 +39,10 @@ class CounterSingleton
                 while (!isInterrupted()) {
 
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(5000);
 
-
-                        counter += 1;
+                        if(MainActivity.getNumPassengers() > 1)
+                            counter += MainActivity.getNumPassengers() / 2;
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();

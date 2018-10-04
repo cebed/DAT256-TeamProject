@@ -1,4 +1,4 @@
-1. Install Java SE 8u181 JDK if you have not done it yet. NB! Newer versions of Java SE do not work in this case.
+1. Install Java SE 8u181 JDK if you have not done it yet. NB! Newer versions of Java SE (10.0.2 or 11) will not work in this case.
 2. Create the JAVA_HOME environment variable by following the instructions here: https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html
     Your JAVA_HOME Variable value should be: C:\Progra~1\Java\jdk1.8.0_181 if you installed Java SE 8u181 JDK
 3. Open File Explorer, go to C:\Users\YOUR_USERNAME\AppData\Local\Android\Sdk\system-images\

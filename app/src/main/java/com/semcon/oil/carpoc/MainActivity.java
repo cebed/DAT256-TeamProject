@@ -2,6 +2,7 @@ package com.semcon.oil.carpoc;
 
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -72,6 +73,19 @@ public class MainActivity extends AppCompatActivity {
                 openMain2Activity();
             }
         });
+
+        TextView totalScoreLabel = (TextView) findViewById(R.id.totalScoreLabel);
+
+        //SharedPreferences sharedPref = getSharedPreferences("SCORE_DATA", Context.MODE_PRIVATE);
+        //int totalScore = sharedPref.getInt("TOTAL_SCORE", 0);
+
+        //totalScore += CounterSingleton.getCounter();
+
+        //totalScoreLabel.setText("Total Score: " + totalScore);
+
+        //SharedPreferences.Editor editor = sharedPref.edit();
+        //editor.putInt("TOTAL_SCORE", totalScore);
+        //editor.commit();
 
         final TextView textView = (TextView)findViewById(R.id.mainText);
 

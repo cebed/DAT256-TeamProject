@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         final TextView textView = (TextView)findViewById(R.id.mainText);
 
         Thread t= new Thread(){
@@ -102,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
         };
         t.start();
 
-
-
-
         gearMonitor = new CarSensorManager.OnSensorChangedListener() {
             @Override
             public void onSensorChanged(CarSensorEvent carSensorEvent) {
@@ -113,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 CarSensorEvent.GearData gearData = carSensorEvent.getGearData(null);
 
                 TextView t = findViewById(R.id.mainText);
-                t.append("\nGear data: " + gearData.gear + " at: " + gearData.timestamp);
+                //t.append("\nGear data: " + gearData.gear + " at: " + gearData.timestamp);
             }
         };
 
@@ -125,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 CarSensorEvent.CarSpeedData speedData = carSensorEvent.getCarSpeedData(null);
 
                 TextView t = findViewById(R.id.mainText);
-                t.append("\nNew speed: " + speedData.carSpeed + " at: " + speedData.timestamp);
+                //t.append("\nNew speed: " + speedData.carSpeed + " at: " + speedData.timestamp);
             }
         };
 
@@ -137,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 CarSensorEvent.RpmData rpmData = carSensorEvent.getRpmData(null);
 
                 TextView t = findViewById(R.id.mainText);
-                t.append("\nNew RPM: " + rpmData.rpm + " at: " + rpmData.timestamp);
+                //t.append("\nNew RPM: " + rpmData.rpm + " at: " + rpmData.timestamp);
             }
         };
 
@@ -149,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int i=0; i < carSensorEvent.intValues.length; i++) {
                     Log.d("CAR", "Ignition state values= " + carSensorEvent.intValues[i]);
                     TextView t = findViewById(R.id.mainText);
-                    t.append("\nIgnition state: " + carSensorEvent.intValues[i]);
+                    //t.append("\nIgnition state: " + carSensorEvent.intValues[i]);
                 }
             }
         };
@@ -169,8 +164,6 @@ public class MainActivity extends AppCompatActivity {
                     case CarCabinManager.ID_DOOR_LOCK:
                         Log.d("TAG", "Belt 4 changed to: " +
                                 carPropertyValue.getValue());
-                        t.append("\nBelt 4 changed to: " +
-                                carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(3, beltBuckled);
                         break;
@@ -178,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
                 if (updated) {
                     int nPassengers = getNumPassengers();
                     Log.d("CAR", "num passengers: " + nPassengers);
-                    t.append("\nNumber of passengers: " + nPassengers);
                     switch (nPassengers) {
                         case 0:
                             i.setImageDrawable(getDrawable(R.mipmap.car_0));
@@ -221,23 +213,17 @@ public class MainActivity extends AppCompatActivity {
                     case CarHvacManager.ID_ZONED_AC_ON:
                         Log.d("TAG", "Belt 1 changed to: " +
                                 carPropertyValue.getValue());
-                        t.append("\nBelt 1 changed to: " +
-                                carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(0, beltBuckled);
                         break;
                     case CarHvacManager.ID_ZONED_AUTOMATIC_MODE_ON:
                         Log.d("TAG", "Belt 2 changed to: " +
                                 carPropertyValue.getValue());
-                        t.append("\nBelt 2 changed to: " +
-                                carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(1, beltBuckled);
                         break;
                     case CarHvacManager.ID_ZONED_HVAC_POWER_ON:
                         Log.d("TAG", "Belt 3 changed to: " +
-                                carPropertyValue.getValue());
-                        t.append("\nBelt 3 changed to: " +
                                 carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(2, beltBuckled);
@@ -246,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
                 if (updated) {
                     int nPassengers = getNumPassengers();
                     Log.d("CAR", "num passengers: " + nPassengers);
-                    t.append("\nNumber of passengers: " + nPassengers);
                     switch (nPassengers) {
                         case 0:
                             i.setImageDrawable(getDrawable(R.mipmap.car_0));

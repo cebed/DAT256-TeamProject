@@ -76,6 +76,7 @@ def beltReporter(env, api):
     """
     This process send the belt status to the AndroidCAR instance.
     """
+    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_LEFT, 0, True)
     while True:
         
         """if random.randrange(0, 8) == 2:
@@ -89,17 +90,23 @@ def beltReporter(env, api):
         if random.randrange(0, 8) == 2:
             api.injectInteger(propdb.PROP_SEAT_BELT_BUCKLED_BACK_RIGHT, random.randrange(0, 2))
         yield env.timeout(0.2)"""
-        if random.randrange(0, 4) == 0:
-            api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_LEFT, 0, True if random.randrange(0, 2) == 1 else False)
-        if random.randrange(0, 4) == 0:
+        #if random.randrange(0, 16) == 0:
+         #   api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_LEFT, 0, True if random.randrange(0, 2) == 1 else False)
+        #if random.randrange(0, 16) == 0:
+            #api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_RIGHT, 0, True if random.randrange(0, 2) == 1 else False)
+        if random.randrange(0, 16) == 0:
             api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_RIGHT, 0, True if random.randrange(0, 2) == 1 else False)
-        if random.randrange(0, 4) == 0:
+        if random.randrange(0, 16) == 0:
             api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_LEFT, 0, True if random.randrange(0, 2) == 1 else False)
-        if random.randrange(0, 4) == 0:
-            api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_MIDDLE, 0, True if random.randrange(0, 2) == 1 else False)
-        if random.randrange(0, 4) == 0:
+        if random.randrange(0, 16) == 0:
             api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_RIGHT, 0, True if random.randrange(0, 2) == 1 else False)
-        yield env.timeout(0.2)
+        yield env.timeout(0.4)
+
+    # Unbuckle belts at end of simulation.
+    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_LEFT, 0, False)
+    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_RIGHT, 0, False)
+    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_LEFT, 0, False)
+    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_RIGHT, 0, False)
 
 
 # run

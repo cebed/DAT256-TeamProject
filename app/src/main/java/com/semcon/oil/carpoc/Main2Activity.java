@@ -13,7 +13,6 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.semcon.oil.carpoc.database.Dataforstore;
-import com.semcon.oil.carpoc.database.StockContract;
 
 public class Main2Activity extends AppCompatActivity {
     protected Button button1;

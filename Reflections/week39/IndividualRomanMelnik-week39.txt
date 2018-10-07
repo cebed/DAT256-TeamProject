@@ -1,0 +1,11 @@
+- What do I want to learn or understand better?
+I want to learn how to create and position 'view windows' in Android Studio. Also how to save/load using SharedPreferences.
+
+- How can I help someone else, or the entire team, to learn something new?
+When I work on my tasks, I usually learn something. When the team meets in school, I try to share my knowledge with them, if I think it may be useful for them.
+
+- What is my contribution towards the team’s application of Scrum?
+I participated in a stand-up meeting, and I'm working on a task.
+
+- What is my contribution towards the team’s deliveries?
+We have not yet divided the tasks between the team members, so this week I have not been very productive, mostly learning Android Studio.

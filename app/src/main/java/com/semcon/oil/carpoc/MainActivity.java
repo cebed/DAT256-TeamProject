@@ -1,10 +1,12 @@
 package com.semcon.oil.carpoc;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
@@ -27,12 +29,21 @@ import android.car.hardware.hvac.CarHvacManager;
 import android.content.ComponentName;
 
 
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
     private Button button;
     private static int count = 0;
+    private int totalScore = 0;
     Car car;
    // CounterSingleton Csingleton;
     Handler handler;
@@ -61,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        totalScore = loadScore(); // Håller totala samlade poängen
+
         seatBelts = new ArrayList<>();
         for (int i = 0; i < NUM_SEATS; i++)
             seatBelts.add(false);
@@ -72,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
                 openMain2Activity();
             }
         });
+
+
 
         final TextView textView = (TextView)findViewById(R.id.mainText);
 
@@ -99,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         t.start();
+
+
+
 
         gearMonitor = new CarSensorManager.OnSensorChangedListener() {
             @Override
@@ -164,6 +182,8 @@ public class MainActivity extends AppCompatActivity {
                     case CarCabinManager.ID_DOOR_LOCK:
                         Log.d("TAG", "Belt 4 changed to: " +
                                 carPropertyValue.getValue());
+                        t.append("\nBelt 4 changed to: " +
+                                carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(3, beltBuckled);
                         break;
@@ -171,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 if (updated) {
                     int nPassengers = getNumPassengers();
                     Log.d("CAR", "num passengers: " + nPassengers);
+                    t.append("\nNumber of passengers: " + nPassengers);
                     switch (nPassengers) {
                         case 0:
                             i.setImageDrawable(getDrawable(R.mipmap.car_0));
@@ -213,17 +234,23 @@ public class MainActivity extends AppCompatActivity {
                     case CarHvacManager.ID_ZONED_AC_ON:
                         Log.d("TAG", "Belt 1 changed to: " +
                                 carPropertyValue.getValue());
+                        t.append("\nBelt 1 changed to: " +
+                                carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(0, beltBuckled);
                         break;
                     case CarHvacManager.ID_ZONED_AUTOMATIC_MODE_ON:
                         Log.d("TAG", "Belt 2 changed to: " +
                                 carPropertyValue.getValue());
+                        t.append("\nBelt 2 changed to: " +
+                                carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(1, beltBuckled);
                         break;
                     case CarHvacManager.ID_ZONED_HVAC_POWER_ON:
                         Log.d("TAG", "Belt 3 changed to: " +
+                                carPropertyValue.getValue());
+                        t.append("\nBelt 3 changed to: " +
                                 carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(2, beltBuckled);
@@ -232,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
                 if (updated) {
                     int nPassengers = getNumPassengers();
                     Log.d("CAR", "num passengers: " + nPassengers);
+                    t.append("\nNumber of passengers: " + nPassengers);
                     switch (nPassengers) {
                         case 0:
                             i.setImageDrawable(getDrawable(R.mipmap.car_0));
@@ -339,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onServiceDisconnected(ComponentName componentName) {
                 Log.d("CAR", "Service disconnected");
-
+                saveScore();
             }
         };
 
@@ -373,6 +401,80 @@ public class MainActivity extends AppCompatActivity {
     public void openMain2Activity () {
         Intent intent = new Intent(this, Main2Activity.class);
         startActivity(intent);
+    }
+
+    // checks base directory for the score file, creates one if it doesn't exist
+    // returns the int value that is written in this file
+    public int loadScore() {
+        File scoreFile;
+        try {
+            String fileName = "/scoreFile.txt";
+            scoreFile = new File(getFilesDir(), fileName);
+            FileReader read = new FileReader(scoreFile);
+            BufferedReader buffRead = new BufferedReader(read);
+            String line = buffRead.readLine();
+
+            read.close();
+            buffRead.close();
+
+            line.trim();
+            return Integer.parseInt(line);
+        }
+        catch(Exception ex) {
+            System.out.println("Unspecified error in MainActivity.loadScore()");
+            createFile();
+            return 0;
+        }
+
+    }
+
+    // writes the total score to the scoreFile (should be invoked upon closing)
+    public void saveScore()
+    {
+        int score = count + totalScore;
+        File scoreFile;
+        try {
+            String fileName = "/scoreFile.txt";
+            scoreFile = new File(getFilesDir(), fileName);
+            String scoreString = Integer.toString(score);
+
+            FileWriter fw = new FileWriter(scoreFile);
+            BufferedWriter out = new BufferedWriter(fw);
+
+            out.write(scoreString);
+
+            out.flush();
+            out.close();
+        }
+        catch(Exception ex) {
+            System.out.println("Unspecified error in MainActivity.saveScore()");
+            return;
+        }
+    }
+
+    // creates a file
+    public void createFile() {
+        try {
+            String fileName = "/scoreFile.txt";
+            File newFile = new File(getFilesDir(), fileName);
+
+            System.out.println(getFilesDir().getAbsolutePath()); // printar path till filen
+
+            if (newFile.createNewFile()) {
+                System.out.println("createFile(): file created");
+            }
+            else {
+                System.out.println("createFile(): file already exists");
+                return;
+            }
+        }
+        catch (Exception e) {
+            System.out.println("createFile(): error");
+            e.printStackTrace();
+            return;
+        }
+
+
     }
 
 }

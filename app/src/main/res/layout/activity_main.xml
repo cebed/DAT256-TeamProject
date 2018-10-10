@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:layout_margin="16dp"
-                android:text="@string/hello_oil"
+                tools:text="1000"
                 android:textSize="120sp"/>
 
          </LinearLayout>

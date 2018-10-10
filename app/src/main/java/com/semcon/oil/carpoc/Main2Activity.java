@@ -58,8 +58,14 @@ public class Main2Activity extends AppCompatActivity {
 
                     textView.setText((val - data.getPrice(position) + ""));
                     val -= data.getPrice(position);
-                    startActivity(new Intent(Main2Activity.this, QRActivity.class));
 
+
+                    String stringToPass  = data.getNames(position);
+
+                    Intent i = new Intent(Main2Activity.this, QRActivity.class);
+                    i.putExtra("bought", stringToPass);
+
+                    startActivity(i);
 
                 }
 

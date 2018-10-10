@@ -13,7 +13,6 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.semcon.oil.carpoc.database.Dataforstore;
-import com.semcon.oil.carpoc.database.StockContract;
 
 public class Main2Activity extends AppCompatActivity {
     protected Button button1;
@@ -21,7 +20,7 @@ public class Main2Activity extends AppCompatActivity {
  //private CursorInventAdapter storeImage;
  private Dataforstore data;
  private TextView textView;
- private StockCursorAdapter adapter;
+ private Main2Activity_GridView adapter;
    // private StockContract.InventoryDbHelper dbHelper;
  private static int val = 5000;
  private    int [] newImages;
@@ -33,7 +32,7 @@ public class Main2Activity extends AppCompatActivity {
 
         data = new Dataforstore();
             gridView = (GridView) findViewById(R.id.list_view);
-            adapter = new StockCursorAdapter(this);
+            adapter = new Main2Activity_GridView(this);
             gridView.setAdapter(adapter);
 
             textView = (TextView)findViewById(R.id.current_balance_store_textview);
@@ -59,25 +58,12 @@ public class Main2Activity extends AppCompatActivity {
 
                     textView.setText((val - data.getPrice(position) + ""));
                     val -= data.getPrice(position);
-/*
-               // data.getNewImages().add(data.getImages(position));
-                    StockContract.StockItem gummibears = new StockContract.StockItem(
-                            data.getNames(position),
-                            data.getNames(position) +"",
-                            45,
-                            "Haribo GmbH",
-                            "+49 000 000 0000",
-                            "haribo@sweet.com",
-                            "R.drawable.cherry");
-
-
-
-
-                    dbHelper.insertItem(gummibears);
-*/
+                    startActivity(new Intent(Main2Activity.this, QRActivity.class));
 
 
                 }
+
+
 
            }
        });

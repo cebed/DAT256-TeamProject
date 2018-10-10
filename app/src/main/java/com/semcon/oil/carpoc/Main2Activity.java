@@ -58,25 +58,12 @@ public class Main2Activity extends AppCompatActivity {
 
                     textView.setText((val - data.getPrice(position) + ""));
                     val -= data.getPrice(position);
-/*
-               // data.getNewImages().add(data.getImages(position));
-                    StockContract.StockItem gummibears = new StockContract.StockItem(
-                            data.getNames(position),
-                            data.getNames(position) +"",
-                            45,
-                            "Haribo GmbH",
-                            "+49 000 000 0000",
-                            "haribo@sweet.com",
-                            "R.drawable.cherry");
-
-
-
-
-                    dbHelper.insertItem(gummibears);
-*/
+                    startActivity(new Intent(Main2Activity.this, QRActivity.class));
 
 
                 }
+
+
 
            }
        });

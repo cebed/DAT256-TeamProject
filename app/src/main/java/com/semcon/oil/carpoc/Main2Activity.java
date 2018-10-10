@@ -20,7 +20,7 @@ public class Main2Activity extends AppCompatActivity {
  //private CursorInventAdapter storeImage;
  private Dataforstore data;
  private TextView textView;
- private StockCursorAdapter adapter;
+ private Main2Activity_GridView adapter;
    // private StockContract.InventoryDbHelper dbHelper;
  private static int val = 5000;
  private    int [] newImages;
@@ -32,7 +32,7 @@ public class Main2Activity extends AppCompatActivity {
 
         data = new Dataforstore();
             gridView = (GridView) findViewById(R.id.list_view);
-            adapter = new StockCursorAdapter(this);
+            adapter = new Main2Activity_GridView(this);
             gridView.setAdapter(adapter);
 
             textView = (TextView)findViewById(R.id.current_balance_store_textview);

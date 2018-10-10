@@ -12,13 +12,13 @@ import android.widget.TextView;
 import com.semcon.oil.carpoc.database.Dataforstore;
 
 
-public class StockCursorAdapter extends BaseAdapter {
+public class Main2Activity_GridView extends BaseAdapter {
 
 
     private final Main2Activity activity;
     private Dataforstore data;
 
-    public StockCursorAdapter(Main2Activity context) {
+    public Main2Activity_GridView(Main2Activity context) {
         //super(context, c, 0);
         this.activity = context;
         data = new Dataforstore();

@@ -131,7 +131,7 @@
         android:layout_marginRight="20dp"
         android:gravity="center|bottom"
         android:columnWidth="280dp"
-        android:numColumns="3"
+        android:numColumns="2"
         android:horizontalSpacing="10dp"
         android:stretchMode="spacingWidth"
         android:verticalSpacing="25dp"

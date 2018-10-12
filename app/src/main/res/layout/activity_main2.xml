@@ -131,10 +131,10 @@
         android:layout_marginRight="20dp"
         android:gravity="center|bottom"
         android:columnWidth="280dp"
-        android:numColumns="2"
+        android:numColumns="3"
         android:horizontalSpacing="10dp"
         android:stretchMode="spacingWidth"
-        android:verticalSpacing="25dp"
+        android:verticalSpacing="2dp"
 
         >
 

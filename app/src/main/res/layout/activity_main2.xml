@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:fontFamily="cursive"
+                android:fontFamily="sans-serif"
                 android:text="Current balance"
                 android:textSize="48sp" />
 
@@ -58,9 +58,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:fontFamily="monospace"
-               android:hint="points"
-                android:textSize="36sp" />
+                android:fontFamily="sans-serif"
+                android:hint="points"
+                android:textSize="48sp" />
 
         </LinearLayout>
 
@@ -117,6 +117,7 @@
      -->
     <GridView
         android:id="@+id/list_view"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"

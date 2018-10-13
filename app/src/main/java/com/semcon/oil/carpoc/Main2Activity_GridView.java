@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.semcon.oil.carpoc.database.Dataforstore;
 
@@ -41,7 +40,7 @@ public class Main2Activity_GridView extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = activity.getLayoutInflater().inflate(R.layout.adapt_the_view,null);
+        convertView = activity.getLayoutInflater().inflate(R.layout.grid_view,null);
         ImageView image = (ImageView) convertView.findViewById(R.id.image_view);
         image.setImageResource(data.getImages(position));
 

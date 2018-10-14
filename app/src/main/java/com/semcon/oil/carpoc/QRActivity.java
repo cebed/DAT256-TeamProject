@@ -15,7 +15,7 @@ public class QRActivity extends AppCompatActivity {
         setContentView(R.layout.activity_qr);
 
 
-<<<<<<< HEAD
+
         Intent intent = getIntent();
         String temp = intent.getExtras().getString("bought");
         TextView textView = (TextView)findViewById(R.id.boughtitem);
@@ -39,8 +39,8 @@ public class QRActivity extends AppCompatActivity {
     public void openMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-=======
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
->>>>>>> dcc2d61772ef520a9f1b7c568438a1c8bd61fb8d
+
     }
 }

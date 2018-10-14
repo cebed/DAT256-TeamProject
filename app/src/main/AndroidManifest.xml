@@ -28,7 +28,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Main2Activity"></activity>
-        <activity android:name=".QRActivity"></activity>
+        <activity android:name=".QRActivity"
+            android:parentActivityName=".Main2Activity"></activity>
     </application>
 
 </manifest>

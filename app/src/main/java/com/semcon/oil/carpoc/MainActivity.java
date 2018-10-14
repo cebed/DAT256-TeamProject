@@ -1,12 +1,9 @@
 package com.semcon.oil.carpoc;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
@@ -28,17 +25,15 @@ import android.car.hardware.cabin.CarCabinManager;
 import android.car.hardware.hvac.CarHvacManager;
 import android.content.ComponentName;
 
-
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.FileOutputStream;
+
+import static android.car.hardware.CarSensorEvent.IGNITION_STATE_OFF;
 
 public class MainActivity extends AppCompatActivity {
     private Button button;
@@ -66,13 +61,19 @@ public class MainActivity extends AppCompatActivity {
     boolean useSpeedData = false;
     private static List<Boolean> seatBelts;
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        saveScore();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        totalScore = loadScore(); // Håller totala samlade poängen
+        totalScore = loadScore();
 
         seatBelts = new ArrayList<>();
         for (int i = 0; i < NUM_SEATS; i++)
@@ -86,9 +87,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-        final TextView textView = (TextView)findViewById(R.id.mainText);
+        final TextView textView = findViewById(R.id.mainText);
 
         Thread t= new Thread(){
             @Override
@@ -115,18 +114,11 @@ public class MainActivity extends AppCompatActivity {
         };
         t.start();
 
-
-
-
         gearMonitor = new CarSensorManager.OnSensorChangedListener() {
             @Override
             public void onSensorChanged(CarSensorEvent carSensorEvent) {
                 Log.d("CAR", "Gear data event...");
-
                 CarSensorEvent.GearData gearData = carSensorEvent.getGearData(null);
-
-                TextView t = findViewById(R.id.mainText);
-                //t.append("\nGear data: " + gearData.gear + " at: " + gearData.timestamp);
             }
         };
 
@@ -134,11 +126,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSensorChanged(CarSensorEvent carSensorEvent) {
                 Log.d("CAR", "Speed event...");
-
                 CarSensorEvent.CarSpeedData speedData = carSensorEvent.getCarSpeedData(null);
-
-                TextView t = findViewById(R.id.mainText);
-                //t.append("\nNew speed: " + speedData.carSpeed + " at: " + speedData.timestamp);
             }
         };
 
@@ -146,11 +134,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSensorChanged(CarSensorEvent carSensorEvent) {
                 Log.d("CAR", "RPM event...");
-
                 CarSensorEvent.RpmData rpmData = carSensorEvent.getRpmData(null);
-
-                TextView t = findViewById(R.id.mainText);
-                //t.append("\nNew RPM: " + rpmData.rpm + " at: " + rpmData.timestamp);
             }
         };
 
@@ -158,11 +142,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSensorChanged(CarSensorEvent carSensorEvent) {
                 Log.d("CAR", "Ignition changed event...");
-
                 for (int i=0; i < carSensorEvent.intValues.length; i++) {
                     Log.d("CAR", "Ignition state values= " + carSensorEvent.intValues[i]);
-                    TextView t = findViewById(R.id.mainText);
-                    //t.append("\nIgnition state: " + carSensorEvent.intValues[i]);
+                    if (carSensorEvent.intValues[i] == IGNITION_STATE_OFF) {
+                        for (int p = 0; p < seatBelts.size(); p++)
+                            seatBelts.set(p, false);
+                        setPassengersImage(0);
+                        saveScore();
+                    }
                 }
             }
         };
@@ -171,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
                 Log.d("TAG", "Cabin onChangeEvent with ID: " + carPropertyValue.getPropertyId());
-                TextView t = findViewById(R.id.mainText);
                 ImageView i = findViewById(R.id.carImageView);
                 boolean updated = false;
                 boolean beltBuckled = false;
@@ -182,8 +168,6 @@ public class MainActivity extends AppCompatActivity {
                     case CarCabinManager.ID_DOOR_LOCK:
                         Log.d("TAG", "Belt 4 changed to: " +
                                 carPropertyValue.getValue());
-                        t.append("\nBelt 4 changed to: " +
-                                carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(3, beltBuckled);
                         break;
@@ -191,30 +175,12 @@ public class MainActivity extends AppCompatActivity {
                 if (updated) {
                     int nPassengers = getNumPassengers();
                     Log.d("CAR", "num passengers: " + nPassengers);
-                    t.append("\nNumber of passengers: " + nPassengers);
-                    switch (nPassengers) {
-                        case 0:
-                            i.setImageDrawable(getDrawable(R.mipmap.car_0));
-                            break;
-                        case 1:
-                            i.setImageDrawable(getDrawable(R.mipmap.car_1));
-                            break;
-                        case 2:
-                            i.setImageDrawable(getDrawable(R.mipmap.car_2));
-                            break;
-                        case 3:
-                            i.setImageDrawable(getDrawable(R.mipmap.car_3));
-                            break;
-                        case 4:
-                            i.setImageDrawable(getDrawable(R.mipmap.car_4));
-                            break;
-                    }
+                    setPassengersImage(nPassengers);
                 }
             }
 
             @Override
-            public void onErrorEvent
-                    (int i, int i1) {
+            public void onErrorEvent(int i, int i1) {
 
             }
         };
@@ -222,8 +188,6 @@ public class MainActivity extends AppCompatActivity {
         carHvacEventCallback = new CarHvacManager.CarHvacEventCallback() {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
-                //Log.d("CAR", "HVAC property changed " + carPropertyValue.toString());
-                TextView t = findViewById(R.id.mainText);
                 ImageView i = findViewById(R.id.carImageView);
                 boolean beltBuckled = false;
                 if (carPropertyValue.getValue() instanceof Boolean)
@@ -234,15 +198,11 @@ public class MainActivity extends AppCompatActivity {
                     case CarHvacManager.ID_ZONED_AC_ON:
                         Log.d("TAG", "Belt 1 changed to: " +
                                 carPropertyValue.getValue());
-                        t.append("\nBelt 1 changed to: " +
-                                carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(0, beltBuckled);
                         break;
                     case CarHvacManager.ID_ZONED_AUTOMATIC_MODE_ON:
                         Log.d("TAG", "Belt 2 changed to: " +
-                                carPropertyValue.getValue());
-                        t.append("\nBelt 2 changed to: " +
                                 carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(1, beltBuckled);
@@ -250,33 +210,14 @@ public class MainActivity extends AppCompatActivity {
                     case CarHvacManager.ID_ZONED_HVAC_POWER_ON:
                         Log.d("TAG", "Belt 3 changed to: " +
                                 carPropertyValue.getValue());
-                        t.append("\nBelt 3 changed to: " +
-                                carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(2, beltBuckled);
-                         break;
+                        break;
                 }
                 if (updated) {
                     int nPassengers = getNumPassengers();
                     Log.d("CAR", "num passengers: " + nPassengers);
-                    t.append("\nNumber of passengers: " + nPassengers);
-                    switch (nPassengers) {
-                        case 0:
-                            i.setImageDrawable(getDrawable(R.mipmap.car_0));
-                            break;
-                        case 1:
-                            i.setImageDrawable(getDrawable(R.mipmap.car_1));
-                            break;
-                        case 2:
-                            i.setImageDrawable(getDrawable(R.mipmap.car_2));
-                            break;
-                        case 3:
-                            i.setImageDrawable(getDrawable(R.mipmap.car_3));
-                            break;
-                        case 4:
-                            i.setImageDrawable(getDrawable(R.mipmap.car_4));
-                            break;
-                    }
+                    setPassengersImage(nPassengers);
                 }
 
             }
@@ -388,7 +329,27 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d("CAR", "Permission NOT granted to use speed events.");
         }
+    }
 
+    private void setPassengersImage(int nPassengers) {
+        ImageView i = findViewById(R.id.carImageView);
+        switch (nPassengers) {
+            case 0:
+                i.setImageDrawable(getDrawable(R.mipmap.car_0));
+                break;
+            case 1:
+                i.setImageDrawable(getDrawable(R.mipmap.car_1_new));
+                break;
+            case 2:
+                i.setImageDrawable(getDrawable(R.mipmap.car_2_new));
+                break;
+            case 3:
+                i.setImageDrawable(getDrawable(R.mipmap.car_3_new));
+                break;
+            case 4:
+                i.setImageDrawable(getDrawable(R.mipmap.car_4_new));
+                break;
+        }
     }
 
     public static int getNumPassengers() {
@@ -421,11 +382,10 @@ public class MainActivity extends AppCompatActivity {
             return Integer.parseInt(line);
         }
         catch(Exception ex) {
-            System.out.println("Unspecified error in MainActivity.loadScore()");
+            System.out.println("Error in MainActivity.loadScore():" + ex.getLocalizedMessage());
             createFile();
             return 0;
         }
-
     }
 
     // writes the total score to the scoreFile (should be invoked upon closing)
@@ -447,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
             out.close();
         }
         catch(Exception ex) {
-            System.out.println("Unspecified error in MainActivity.saveScore()");
+            System.out.println("Error in MainActivity.saveScore():" + ex.getLocalizedMessage());
             return;
         }
     }
@@ -469,12 +429,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         catch (Exception e) {
-            System.out.println("createFile(): error");
+            System.out.println("createFile(): error:" + e.getLocalizedMessage());
             e.printStackTrace();
             return;
         }
-
-
     }
 
 }

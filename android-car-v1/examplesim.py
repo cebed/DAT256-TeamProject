@@ -42,8 +42,6 @@ def revProcess(env):
         vehicle_data.speed = vehicle_data.rpm * vehicle_data.gear / 100.0
 
         yield env.timeout(0.025)
-     # turn ignition state off at end of simulation.
-    api.injectInteger(propdb.PROP_IGNITION_STATE, propdb.IGNITION_STATE_OFF)
 
 def gearReporter(env, api):
     """
@@ -78,40 +76,19 @@ def beltReporter(env, api):
     """
     api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_LEFT, 0, True)
     while True:
-        
-        """if random.randrange(0, 8) == 2:
-            api.injectInteger(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_LEFT, random.randrange(0, 2))
-        if random.randrange(0, 8) == 2:
-            api.injectInteger(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_RIGHT, random.randrange(0, 2))
-        if random.randrange(0, 8) == 2:
-            api.injectInteger(propdb.PROP_SEAT_BELT_BUCKLED_BACK_LEFT, random.randrange(0, 2))
-        if random.randrange(0, 8) == 2:
-            api.injectInteger(propdb.PROP_SEAT_BELT_BUCKLED_BACK_MIDDLE, random.randrange(0, 2))
-        if random.randrange(0, 8) == 2:
-            api.injectInteger(propdb.PROP_SEAT_BELT_BUCKLED_BACK_RIGHT, random.randrange(0, 2))
-        yield env.timeout(0.2)"""
-        #if random.randrange(0, 16) == 0:
-         #   api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_LEFT, 0, True if random.randrange(0, 2) == 1 else False)
-        #if random.randrange(0, 16) == 0:
-            #api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_RIGHT, 0, True if random.randrange(0, 2) == 1 else False)
-        if random.randrange(0, 16) == 0:
+        if random.randrange(0, 12) == 0:
             api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_RIGHT, 0, True if random.randrange(0, 2) == 1 else False)
-        if random.randrange(0, 16) == 0:
+        if random.randrange(0, 12) == 0:
             api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_LEFT, 0, True if random.randrange(0, 2) == 1 else False)
-        if random.randrange(0, 16) == 0:
+        if random.randrange(0, 12) == 0:
             api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_RIGHT, 0, True if random.randrange(0, 2) == 1 else False)
-        yield env.timeout(0.4)
-
-    # Unbuckle belts at end of simulation.
-    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_LEFT, 0, False)
-    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_RIGHT, 0, False)
-    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_LEFT, 0, False)
-    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_RIGHT, 0, False)
+        yield env.timeout(0.3)
 
 
 # run
 if __name__ == '__main__':
     random.seed(datetime.now())
+    sim_time = 10.0
     # create an interface to the AndroidCAR running on an emulator.
     api = carapi.AndroidCARInterface()
     # create an event simulation environment.
@@ -123,4 +100,10 @@ if __name__ == '__main__':
     rpmp = env.process(rpmReporter(env, api))
     beltp = env.process(beltReporter(env, api))
     # start simulation and run it for 60 seconds.
-    env.run(until=60.0)
+    env.run(until=sim_time)
+    # Turn off all belt sensors and engine.
+    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_LEFT, 0, False)
+    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_RIGHT, 0, False)
+    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_LEFT, 0, False)
+    api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_BACK_RIGHT, 0, False)
+    api.injectInteger(propdb.PROP_IGNITION_STATE, propdb.IGNITION_STATE_OFF)

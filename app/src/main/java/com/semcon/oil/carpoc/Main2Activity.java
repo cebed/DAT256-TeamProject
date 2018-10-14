@@ -38,9 +38,8 @@ public class Main2Activity extends AppCompatActivity {
             textView = (TextView)findViewById(R.id.current_balance_store_textview);
             textView.setText(val +"");
 
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-     //   dbHelper = new StockContract.InventoryDbHelper(this);
+
 
 
         homebuton();
@@ -91,17 +90,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) { // om vi trycker på rutan ->rutan som finns uppe i rutan som tar oss vidare till store
-        switch (item.getItemId()) {
-            case R.id.go_to_store_page:
-                // add dummy data for testing
-          //      Intent intent = new Intent(this, MainInvent.class);
-             //   startActivity(intent);
 
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
     public void homebuton(){

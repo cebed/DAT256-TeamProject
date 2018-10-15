@@ -8,6 +8,10 @@
     <uses-permission android:name="android.car.permission.CAR_FUEL" />
     <uses-permission android:name="android.car.permission.CAR_VENDOR_EXTENSION" />
     <uses-permission android:name="android.car.permission.CAR_CABIN" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +28,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Main2Activity"></activity>
+        <activity android:name=".QRActivity"
+            android:parentActivityName=".Main2Activity"></activity>
     </application>
 
 </manifest>

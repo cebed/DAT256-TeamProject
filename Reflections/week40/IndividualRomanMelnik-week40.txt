@@ -1,0 +1,11 @@
+- What do I want to learn or understand better?
+I want to learn to debug better. I get errors that I don't quite know how to fix, even after googling for solutions.
+
+- How can I help someone else, or the entire team, to learn something new?
+I need to be present at team meetings during the whole time, this way both I and the team will learn more.
+
+- What is my contribution towards the team’s application of Scrum?
+I have participated in a stand-up meeting and in a team programming session.
+
+- What is my contribution towards the team’s deliveries?
+I created a TextView for Total Score and I tried to implement Save/Load, but I get errors.

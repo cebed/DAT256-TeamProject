@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     boolean useSpeedData = false;
     private static List<Boolean> seatBelts;
 
+    TextView totalScoreTxt;
+
     @Override
     public void onStop() {
         super.onStop();
@@ -74,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         totalScore = loadScore();
+
+        totalScoreTxt=(TextView) findViewById(R.id.totalScore);
+        totalScoreTxt.setText("Total Score: " + totalScore);
 
         seatBelts = new ArrayList<>();
         for (int i = 0; i < NUM_SEATS; i++)

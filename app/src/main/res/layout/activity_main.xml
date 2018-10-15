@@ -27,15 +27,23 @@
 
         <Button
             android:id="@+id/button2"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="@string/store"
             android:background="@android:color/darker_gray"
-            android:textColor="@android:color/white"
-            style="?android:attr/borderlessButtonStyle"
-            />
+            android:text="@string/store"
+            android:textColor="@android:color/white" />
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/totalScore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="end"
+        android:inputType="textPersonName"
+        android:text="Total Score: " />
 
     <ImageView
         android:id="@+id/carImageView"

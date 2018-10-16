@@ -7,42 +7,52 @@
     android:layout_height="match_parent"
 
     tools:context=".Main2Activity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:orientation="vertical">
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <Button
                 android:id="@+id/button3"
+                style="?android:attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"
-                android:text="@string/home"
                 android:background="@android:color/darker_gray"
-                android:textColor="@android:color/white"
-                style="?android:attr/borderlessButtonStyle"
-                />
+                android:text="@string/home"
+                android:textColor="@android:color/white" />
+
             <Button
                 android:id="@+id/button2"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.0"
                 android:layout_alignParentRight="true"
+                android:layout_weight="1.0"
                 android:background="@android:color/black"
                 android:text="@string/store"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_gravity="right"
-            android:gravity="right">
+            android:gravity="right"
+            android:background="#F2FBEF"
+
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/show_text_curent_balance"
@@ -51,7 +61,7 @@
                 android:layout_margin="16dp"
                 android:fontFamily="sans-serif"
                 android:text="Current balance"
-                android:textSize="48sp" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/current_balance_store_textview"
@@ -60,12 +70,44 @@
                 android:layout_margin="16dp"
                 android:fontFamily="sans-serif"
                 android:hint="points"
-                android:textSize="48sp" />
+                android:textSize="30sp" />
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#0A2A1B"
 
 
+            >
+
+            <GridView
+                android:id="@+id/list_view"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="24dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:columnWidth="290dp"
+                android:gravity="center|bottom"
+
+                android:horizontalSpacing="10dp"
+                android:numColumns="3"
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingTop="1dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:stretchMode="spacingWidth"
+                android:verticalSpacing="20dp"
+
+                >
+
+            </GridView>
+        </LinearLayout>
 
 
     </LinearLayout>
@@ -115,31 +157,7 @@
         </LinearLayout>
 
      -->
-    <GridView
-        android:id="@+id/list_view"
 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="100dp"
-        android:layout_margin="24dp"
-        android:paddingRight="10dp"
-        android:layout_alignParentBottom="true"
-
-        android:orientation="vertical"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:gravity="center|bottom"
-        android:columnWidth="280dp"
-        android:numColumns="3"
-        android:horizontalSpacing="10dp"
-        android:stretchMode="spacingWidth"
-        android:verticalSpacing="2dp"
-
-        >
-
-    </GridView>
     <!--
       <android.support.design.widget.FloatingActionButton
           android:id="@+id/fab"

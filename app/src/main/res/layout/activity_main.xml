@@ -36,12 +36,13 @@
             android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <EditText
+    <TextView
         android:id="@+id/totalScore"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:gravity="end"
+        android:layout_height="45dp"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:textSize="25dp"
         android:inputType="textPersonName"
         android:text="Total Score: " />
 
@@ -61,11 +62,11 @@
             <TextView
                 android:id="@+id/mainText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:padding="16dp"
                 android:layout_margin="16dp"
                 tools:text="1000"
-                android:textSize="120sp"/>
+                android:textSize="100sp"/>
 
          </LinearLayout>
 

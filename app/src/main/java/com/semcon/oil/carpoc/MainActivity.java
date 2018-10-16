@@ -3,6 +3,7 @@ package com.semcon.oil.carpoc;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         totalScoreTxt=(TextView) findViewById(R.id.totalScore);
         totalScoreTxt.setText("Total Score: " + totalScore);
+        totalScoreTxt.setTextColor(Color.BLACK);
 
         seatBelts = new ArrayList<>();
         for (int i = 0; i < NUM_SEATS; i++)

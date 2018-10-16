@@ -1,11 +1,13 @@
 package com.semcon.oil.carpoc;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.content.Intent;
 
@@ -21,8 +23,21 @@ public class QRActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String temp = intent.getExtras().getString("bought");
+        String t = intent.getExtras().getString("tid");
+        int pics = intent.getExtras().getInt("picture");
+        String prices = intent.getExtras().getString("proPrice");
         TextView textView = (TextView)findViewById(R.id.boughtitem);
+        TextView textView1 = (TextView)findViewById(R.id.datText);
+        TextView priceView = (TextView)findViewById(R.id.productPrice);
+        priceView.setTextColor(Color.BLACK);
+        textView1.setTextColor(Color.BLACK);
+        textView.setTextColor(Color.BLACK);
+
+        ImageView imageView = (ImageView)findViewById(R.id.pic);
         textView.setText(temp);
+        textView1.setText(t);
+        priceView.setText(prices);
+        imageView.setImageResource(pics);
         homeButton();
         storeButton();
 

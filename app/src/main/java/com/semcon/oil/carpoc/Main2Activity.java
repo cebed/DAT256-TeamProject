@@ -3,6 +3,7 @@ package com.semcon.oil.carpoc;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
+import java.util.*;
+import java.text.SimpleDateFormat;
 
 import com.semcon.oil.carpoc.database.Dataforstore;
 
@@ -49,6 +52,7 @@ public class Main2Activity extends AppCompatActivity {
            @Override
            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+               String timeStamp = new SimpleDateFormat("yyyy-MM-dd    HH:mm").format(Calendar.getInstance().getTime());
 
 
 
@@ -59,11 +63,14 @@ public class Main2Activity extends AppCompatActivity {
                     val -= data.getPrice(position);
 
 
-                    String stringToPass  = data.getNames(position);
-
+                    String stringToPass  = "Product: "+ data.getNames(position);
+                    int picturePass = data.getImages(position);
+                    String passPrice = "Price: " +  + data.getPrice(position);
                     Intent i = new Intent(Main2Activity.this, QRActivity.class);
                     i.putExtra("bought", stringToPass);
-
+                    i.putExtra("tid", timeStamp);
+                    i.putExtra("picture",picturePass);
+                    i.putExtra("proPrice", passPrice);
                     startActivity(i);
 
                 }

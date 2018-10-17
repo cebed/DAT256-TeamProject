@@ -1,7 +1,9 @@
 package com.semcon.oil.carpoc;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.view.Menu;
@@ -53,35 +55,58 @@ public class Main2Activity extends AppCompatActivity {
 
        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+           public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
-               String timeStamp = new SimpleDateFormat("yyyy-MM-dd    HH:mm").format(Calendar.getInstance().getTime());
+               final String timeStamp = new SimpleDateFormat("yyyy-MM-dd    HH:mm").format(Calendar.getInstance().getTime());
 
 
 
                 if(val-data.getPrice(position)>0) {
 
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(Main2Activity.this);
+                    builder.setTitle("Använd kupongen?");
+                    builder.setMessage("\n" +
+                            "Vill du verkligen använda den här kopongen!");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            textView.setText((val - data.getPrice(position) + ""));
+                            val -= data.getPrice(position);
 
-                    textView.setText((val - data.getPrice(position) + ""));
-                    val -= data.getPrice(position);
+                            FileUtils.saveScore(getFilesDir(),val);
 
-                    FileUtils.saveScore(getFilesDir(),val);
+                            String stringToPass  = "Product: "+ data.getNames(position);
+                            int picturePass = data.getImages(position);
+                            String passPrice = "Price: " +  + data.getPrice(position);
+                            Intent in = new Intent(Main2Activity.this, QRActivity.class);
+                            in.putExtra("bought", stringToPass);
+                            in.putExtra("tid", timeStamp);
+                            in.putExtra("picture",picturePass);
+                            in.putExtra("proPrice", passPrice);
+                            startActivity(in);
 
-                    String stringToPass  = "Product: "+ data.getNames(position);
-                    int picturePass = data.getImages(position);
-                    String passPrice = "Price: " +  + data.getPrice(position);
-                    Intent i = new Intent(Main2Activity.this, QRActivity.class);
-                    i.putExtra("bought", stringToPass);
-                    i.putExtra("tid", timeStamp);
-                    i.putExtra("picture",picturePass);
-                    i.putExtra("proPrice", passPrice);
-                    startActivity(i);
+                        }
+                    });
+
+                    builder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            dialogInterface.dismiss();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+
 
                 }
 
 
 
-           }
+
        });
 
 

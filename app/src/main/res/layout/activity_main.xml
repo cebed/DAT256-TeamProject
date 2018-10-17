@@ -36,15 +36,34 @@
             android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/totalScore"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:gravity="center_horizontal"
-        android:textStyle="bold"
-        android:textSize="25dp"
-        android:inputType="textPersonName"
-        android:text="Total Score: " />
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:background="#F2FBEF"
+
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/show_text_curent_balance_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:fontFamily="sans-serif"
+            android:text="Current balance"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/totalScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:fontFamily="sans-serif"
+            android:hint="points"
+            android:textSize="30sp" />
+
+    </LinearLayout>
 
 
 

@@ -86,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
 
         tripScoreTxt = findViewById(R.id.mainText);
         totalScoreTxt=(TextView) findViewById(R.id.totalScore);
-        totalScoreTxt.setText("Total Score: " + totalScore);
-        totalScoreTxt.setTextColor(Color.BLACK);
+
+
 
         seatBelts = new ArrayList<>();
         for (int i = 0; i < NUM_SEATS; i++)
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                         count = 0;
                         CounterSingleton.resetCounter();
                         tripScoreTxt.setText("" + 0);
-                        totalScoreTxt.setText("Total Score: " + totalScore);
+                        totalScoreTxt.setText("" + totalScore);
                         FileUtils.saveScore(getFilesDir(), totalScore);
                     } else if (carSensorEvent.intValues[i] == IGNITION_STATE_ON && !getIsDriving
                             () && !tripPtsThread.isAlive()) {

@@ -42,6 +42,7 @@ public class QRActivity extends AppCompatActivity {
         imageView.setImageResource(pics);
         homeButton();
         storeButton();
+        facebookButton();
 
 
     }
@@ -84,7 +85,7 @@ public class QRActivity extends AppCompatActivity {
 
     public void facebookButton() {
         fbButton = (ImageButton) findViewById(R.id.imageButton2);
-        backToStore.setOnClickListener(new View.OnClickListener() {
+        fbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

@@ -16,29 +16,32 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 
 import com.semcon.oil.carpoc.database.Dataforstore;
+import com.semcon.oil.carpoc.utils.FileUtils;
 
 public class Main2Activity extends AppCompatActivity {
     protected Button button1;
  private  GridView gridView;
- //private CursorInventAdapter storeImage;
+
  private Dataforstore data;
  private TextView textView;
+ private FileUtils currentbalance;
  private Main2Activity_GridView adapter;
-   // private StockContract.InventoryDbHelper dbHelper;
- private static int val = 5000;
+
+ private static int val = 0;
  private    int [] newImages;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
-        data = new Dataforstore();
+        currentbalance = new FileUtils();
+            data = new Dataforstore();
             gridView = (GridView) findViewById(R.id.list_view);
             adapter = new Main2Activity_GridView(this);
             gridView.setAdapter(adapter);
 
             textView = (TextView)findViewById(R.id.current_balance_store_textview);
+            val = FileUtils.loadScore(getFilesDir());
             textView.setText(val +"");
 
 
@@ -62,6 +65,7 @@ public class Main2Activity extends AppCompatActivity {
                     textView.setText((val - data.getPrice(position) + ""));
                     val -= data.getPrice(position);
 
+                    FileUtils.saveScore(getFilesDir(),val);
 
                     String stringToPass  = "Product: "+ data.getNames(position);
                     int picturePass = data.getImages(position);

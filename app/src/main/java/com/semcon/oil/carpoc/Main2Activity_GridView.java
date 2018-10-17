@@ -44,16 +44,7 @@ public class Main2Activity_GridView extends BaseAdapter {
         ImageView image = (ImageView) convertView.findViewById(R.id.image_view);
         image.setImageResource(data.getImages(position));
 
-/*
-        TextView textview_name = (TextView) convertView.findViewById(R.id.product_name);
-        TextView quantityTextView = (TextView) convertView.findViewById(R.id.quantity);
-        TextView priceView = (TextView) convertView.findViewById(R.id.price);
 
-
-            textview_name.setText(data.getNames(position));
-
-            priceView.setText(data.getPrice(position) + "");
-*/
         return convertView;
     }
 

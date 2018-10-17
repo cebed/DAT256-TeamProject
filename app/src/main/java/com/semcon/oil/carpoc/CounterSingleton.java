@@ -53,4 +53,8 @@ class CounterSingleton
         t2.start();
 
     }
+
+    public static void resetCounter() {
+        counter = 0;
+    }
 }

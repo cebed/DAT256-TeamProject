@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                         //saveScore();
                         totalScore = totalScore + count;
                         count = 0;
+                        CounterSingleton.resetCounter();
                         tripScoreTxt.setText("" + 0);
                         totalScoreTxt.setText("Total Score: " + totalScore);
                         FileUtils.saveScore(getFilesDir(), totalScore);
@@ -294,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Sets the passengers image
     private void setPassengersImage(int nPassengers) {
         ImageView i = findViewById(R.id.carImageView);
         switch (nPassengers) {
@@ -356,6 +358,7 @@ public class MainActivity extends AppCompatActivity {
         return isDriving;
     }
 
+    // Sets driving status.
     private synchronized void setIsDriving(boolean isDriving) {
         MainActivity.this.isDriving = isDriving;
     }

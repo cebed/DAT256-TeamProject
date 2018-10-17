@@ -10,9 +10,9 @@ public class Dataforstore {
 
 
     private String [] Names = {"kaffe","glass","tank","biltvätt","hörlurar","spolarvätska","Motorolja","biobiljett","iphone"};
-   private int price  [] = {250,500,1000,1500,2500,3000,3500,5000,10000}; // orginal prices
+   //private int price  [] = {250,500,1000,1500,2500,3000,3500,5000,10000}; // orginal prices
 
-  //  private int price  [] = {1,2,3,4,5,10,20,25,30}; // prices for demo
+    private int price  [] = {1,2,3,4,5,10,20,25,30}; // prices for demo
     public int getImages(int position) {
         return Images[position];
     }

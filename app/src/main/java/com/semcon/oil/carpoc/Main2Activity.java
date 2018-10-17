@@ -47,7 +47,7 @@ public class Main2Activity extends AppCompatActivity {
             textView.setText(val +"");
 
 
-
+            setTitle("Store");
 
 
         homebuton();

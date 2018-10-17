@@ -31,6 +31,7 @@ def revProcess(env):
     """
     This process simulate the revving of the engine.
     """
+    api.injectInteger(propdb.PROP_IGNITION_STATE, propdb.IGNITION_STATE_ON)
     while True:
         
         if vehicle_data.rpm < 3000:
@@ -88,7 +89,6 @@ def beltReporter(env, api):
 # run
 if __name__ == '__main__':
     random.seed(datetime.now())
-    sim_time = 10.0
     # create an interface to the AndroidCAR running on an emulator.
     api = carapi.AndroidCARInterface()
     # create an event simulation environment.
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     rpmp = env.process(rpmReporter(env, api))
     beltp = env.process(beltReporter(env, api))
     # start simulation and run it for 60 seconds.
-    env.run(until=sim_time)
+    env.run(until=30.0)
     # Turn off all belt sensors and engine.
     api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_LEFT, 0, False)
     api.injectZonedBoolean(propdb.PROP_SEAT_BELT_BUCKLED_FRONT_RIGHT, 0, False)

@@ -26,18 +26,19 @@ import android.car.hardware.cabin.CarCabinManager;
 import android.car.hardware.hvac.CarHvacManager;
 import android.content.ComponentName;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import com.semcon.oil.carpoc.utils.FileUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.car.hardware.CarSensorEvent.IGNITION_STATE_OFF;
+import static android.car.hardware.CarSensorEvent.IGNITION_STATE_ON;
 
+// Main activity displaying total points, passengers and current trip points.
 public class MainActivity extends AppCompatActivity {
+
     private Button button;
+    private TextView totalScoreTxt, tripScoreTxt;
     private static int count = 0;
     private int totalScore = 0;
     Car car;
@@ -50,24 +51,29 @@ public class MainActivity extends AppCompatActivity {
     CarCabinManager carCabinManager;
 
     CarSensorManager.OnSensorChangedListener ignitionStateChangedListener;
-    CarSensorManager.OnSensorChangedListener gearMonitor;
-    CarSensorManager.OnSensorChangedListener speedMonitor;
-    CarSensorManager.OnSensorChangedListener rpmMonitor;
 
     CarCabinManager.CarCabinEventCallback beltChangedListener;
     CarHvacManager.CarHvacEventCallback carHvacEventCallback;
 
     private static final int speedDataPermissionMagicNumber = 42;
     private static final int NUM_SEATS = 4;
-    boolean useSpeedData = false;
+    private boolean useSpeedData = false;
+    private boolean isDriving = false;
     private static List<Boolean> seatBelts;
 
-    TextView totalScoreTxt;
+    private Thread tripPtsThread;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        totalScore = FileUtils.loadScore(getFilesDir());
+    }
 
     @Override
     public void onStop() {
         super.onStop();
-        saveScore();
+        //saveScore();
+        FileUtils.saveScore(getFilesDir(), totalScore + count);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -76,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        totalScore = loadScore();
+        //totalScore = loadScore();
 
+        tripScoreTxt = findViewById(R.id.mainText);
         totalScoreTxt=(TextView) findViewById(R.id.totalScore);
         totalScoreTxt.setText("Total Score: " + totalScore);
         totalScoreTxt.setTextColor(Color.BLACK);
@@ -94,56 +101,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final TextView textView = findViewById(R.id.mainText);
-
-        Thread t= new Thread(){
-            @Override
-            public void run(){
-                while(!isInterrupted()){
-
-                    try{
-                        Thread.sleep(1000);
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                CounterSingleton c =  CounterSingleton.getInstance();
-                                count = c.getCounter();
-                                //count++;
-                                textView.setText(String.valueOf(count));
-                            }
-                        });
-                    }
-                    catch(InterruptedException e){
-                        e.printStackTrace();}
-                }
-            }
-        };
-        t.start();
-
-        gearMonitor = new CarSensorManager.OnSensorChangedListener() {
-            @Override
-            public void onSensorChanged(CarSensorEvent carSensorEvent) {
-                Log.d("CAR", "Gear data event...");
-                CarSensorEvent.GearData gearData = carSensorEvent.getGearData(null);
-            }
-        };
-
-        speedMonitor = new CarSensorManager.OnSensorChangedListener() {
-            @Override
-            public void onSensorChanged(CarSensorEvent carSensorEvent) {
-                Log.d("CAR", "Speed event...");
-                CarSensorEvent.CarSpeedData speedData = carSensorEvent.getCarSpeedData(null);
-            }
-        };
-
-        rpmMonitor = new CarSensorManager.OnSensorChangedListener() {
-            @Override
-            public void onSensorChanged(CarSensorEvent carSensorEvent) {
-                Log.d("CAR", "RPM event...");
-                CarSensorEvent.RpmData rpmData = carSensorEvent.getRpmData(null);
-            }
-        };
+        tripPtsThread = getTripPtsThread();
+        //t.start();
 
         ignitionStateChangedListener = new CarSensorManager.OnSensorChangedListener() {
             @Override
@@ -154,8 +113,20 @@ public class MainActivity extends AppCompatActivity {
                     if (carSensorEvent.intValues[i] == IGNITION_STATE_OFF) {
                         for (int p = 0; p < seatBelts.size(); p++)
                             seatBelts.set(p, false);
+                        setIsDriving(false);
                         setPassengersImage(0);
-                        saveScore();
+                        //saveScore();
+                        totalScore = totalScore + count;
+                        count = 0;
+                        tripScoreTxt.setText("" + 0);
+                        totalScoreTxt.setText("Total Score: " + totalScore);
+                        FileUtils.saveScore(getFilesDir(), totalScore);
+                    } else if (carSensorEvent.intValues[i] == IGNITION_STATE_ON && !getIsDriving
+                            () && !tripPtsThread.isAlive()) {
+                        setIsDriving(true);
+                        tripPtsThread.interrupt();
+                        tripPtsThread = getTripPtsThread();
+                        tripPtsThread.start();
                     }
                 }
             }
@@ -164,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         beltChangedListener = new CarCabinManager.CarCabinEventCallback() {
             @Override
             public void onChangeEvent(CarPropertyValue carPropertyValue) {
-                Log.d("TAG", "Cabin onChangeEvent with ID: " + carPropertyValue.getPropertyId());
+                Log.d("CAR", "Cabin onChangeEvent with ID: " + carPropertyValue.getPropertyId());
                 ImageView i = findViewById(R.id.carImageView);
                 boolean updated = false;
                 boolean beltBuckled = false;
@@ -203,19 +174,19 @@ public class MainActivity extends AppCompatActivity {
                 boolean updated = false;
                 switch (carPropertyValue.getPropertyId() ) {
                     case CarHvacManager.ID_ZONED_AC_ON:
-                        Log.d("TAG", "Belt 1 changed to: " +
+                        Log.d("CAR", "Belt 1 changed to: " +
                                 carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(0, beltBuckled);
                         break;
                     case CarHvacManager.ID_ZONED_AUTOMATIC_MODE_ON:
-                        Log.d("TAG", "Belt 2 changed to: " +
+                        Log.d("CAR", "Belt 2 changed to: " +
                                 carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(1, beltBuckled);
                         break;
                     case CarHvacManager.ID_ZONED_HVAC_POWER_ON:
-                        Log.d("TAG", "Belt 3 changed to: " +
+                        Log.d("CAR", "Belt 3 changed to: " +
                                 carPropertyValue.getValue());
                         updated = true;
                         seatBelts.set(2, beltBuckled);
@@ -291,22 +262,6 @@ public class MainActivity extends AppCompatActivity {
                     sensorManager.registerListener(ignitionStateChangedListener,
                             CarSensorManager.SENSOR_TYPE_IGNITION_STATE,
                             CarSensorManager.SENSOR_RATE_NORMAL);
-
-                    /*sensorManager.registerListener(gearMonitor,
-                            CarSensorManager.SENSOR_TYPE_GEAR,
-                            CarSensorManager.SENSOR_RATE_NORMAL);
-
-                    sensorManager.registerListener(rpmMonitor,
-                            CarSensorManager.SENSOR_TYPE_RPM,
-                            CarSensorManager.SENSOR_RATE_NORMAL);
-
-                    if (useSpeedData) {
-                        sensorManager.registerListener(speedMonitor,
-                                CarSensorManager.SENSOR_TYPE_CAR_SPEED,
-                                CarSensorManager.SENSOR_RATE_NORMAL);
-                    } else {
-                        Log.d("CAR", "speedMonitor not registering...");
-                    }*/
                 } catch (CarNotConnectedException e) {
                     e.printStackTrace();
                 }
@@ -315,7 +270,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onServiceDisconnected(ComponentName componentName) {
                 Log.d("CAR", "Service disconnected");
-                saveScore();
+                //saveScore();
+                FileUtils.saveScore(getFilesDir(), totalScore + count);
             }
         };
 
@@ -359,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Returns number of passengers currently in the car.
     public static int getNumPassengers() {
         int nPassengers = 0;
         for (boolean belt: seatBelts)
@@ -366,80 +323,47 @@ public class MainActivity extends AppCompatActivity {
         return nPassengers;
     }
 
+    // Returns a background thread updating current trip points.
+    private Thread getTripPtsThread() {
+        return new Thread(){
+            @Override
+            public void run(){
+                while(!isInterrupted() && getIsDriving()){
+
+                    try{
+                        Thread.sleep(1000);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CounterSingleton c =  CounterSingleton.getInstance();
+                                count = c.getCounter();
+                                //count++;
+                                if (getIsDriving())
+                                    tripScoreTxt.setText(String.valueOf(count));
+                            }
+                        });
+                    }
+                    catch(InterruptedException e){
+                        e.printStackTrace();}
+                }
+            }
+        };
+    }
+
+    // Returns if engine is on or not.
+    private synchronized boolean getIsDriving() {
+        return isDriving;
+    }
+
+    private synchronized void setIsDriving(boolean isDriving) {
+        MainActivity.this.isDriving = isDriving;
+    }
+
+    // Opens Store-MainActivity.
     public void openMain2Activity () {
         Intent intent = new Intent(this, Main2Activity.class);
         startActivity(intent);
-    }
-
-    // checks base directory for the score file, creates one if it doesn't exist
-    // returns the int value that is written in this file
-    public int loadScore() {
-        File scoreFile;
-        try {
-            String fileName = "/scoreFile.txt";
-            scoreFile = new File(getFilesDir(), fileName);
-            FileReader read = new FileReader(scoreFile);
-            BufferedReader buffRead = new BufferedReader(read);
-            String line = buffRead.readLine();
-
-            read.close();
-            buffRead.close();
-
-            line.trim();
-            return Integer.parseInt(line);
-        }
-        catch(Exception ex) {
-            System.out.println("Error in MainActivity.loadScore():" + ex.getLocalizedMessage());
-            createFile();
-            return 0;
-        }
-    }
-
-    // writes the total score to the scoreFile (should be invoked upon closing)
-    public void saveScore()
-    {
-        int score = count + totalScore;
-        File scoreFile;
-        try {
-            String fileName = "/scoreFile.txt";
-            scoreFile = new File(getFilesDir(), fileName);
-            String scoreString = Integer.toString(score);
-
-            FileWriter fw = new FileWriter(scoreFile);
-            BufferedWriter out = new BufferedWriter(fw);
-
-            out.write(scoreString);
-
-            out.flush();
-            out.close();
-        }
-        catch(Exception ex) {
-            System.out.println("Error in MainActivity.saveScore():" + ex.getLocalizedMessage());
-            return;
-        }
-    }
-
-    // creates a file
-    public void createFile() {
-        try {
-            String fileName = "/scoreFile.txt";
-            File newFile = new File(getFilesDir(), fileName);
-
-            System.out.println(getFilesDir().getAbsolutePath()); // printar path till filen
-
-            if (newFile.createNewFile()) {
-                System.out.println("createFile(): file created");
-            }
-            else {
-                System.out.println("createFile(): file already exists");
-                return;
-            }
-        }
-        catch (Exception e) {
-            System.out.println("createFile(): error:" + e.getLocalizedMessage());
-            e.printStackTrace();
-            return;
-        }
     }
 
 }

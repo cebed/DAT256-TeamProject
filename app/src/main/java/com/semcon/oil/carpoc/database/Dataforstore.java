@@ -6,7 +6,7 @@ import com.semcon.oil.carpoc.R;
 
 public class Dataforstore {
 
-    private int [] Images = {R.drawable.cherry,R.drawable.cola,R.drawable.fresquito,R.drawable.fruit_salad,R.drawable.cherry,R.drawable.cola,R.drawable.fresquito,R.drawable.fruit_salad,R.drawable.cherry,R.drawable.cola,R.drawable.fresquito,R.drawable.fruit_salad};
+    private int [] Images = {R.drawable.kaffe,R.drawable.glass,R.drawable.tank,R.drawable.biltvatt,R.drawable.headset,R.drawable.spolar,R.drawable.motor,R.drawable.bio,R.drawable.iphone};
     private String [] Image_Strings ={"R.drawable.cherry","R.drawable.cola","R.drawable.fresquito","R.drawable.fruit_salad","R.drawable.cherry","R.drawable.cola","R.drawable.fresquito","R.drawable.fruit_salad","R.drawable.cherry","R.drawable.cola","R.drawable.fresquito"};
 
     private String [] Names = {"cherry","cola","fresquito","fruit_salad","cherry","cola","fresquito","fruit_salad","cherry","cola","fresquito","fruit_salad"};

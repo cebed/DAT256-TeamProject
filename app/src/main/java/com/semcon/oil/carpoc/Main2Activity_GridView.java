@@ -18,14 +18,14 @@ public class Main2Activity_GridView extends BaseAdapter {
     private Dataforstore data;
 
     public Main2Activity_GridView(Main2Activity context) {
-        //super(context, c, 0);
+
         this.activity = context;
         data = new Dataforstore();
     }
 
     @Override
     public int getCount() {
-       return 6;
+       return 9;
     }
 
     @Override

@@ -46,29 +46,33 @@
         android:inputType="textPersonName"
         android:text="Total Score: " />
 
-    <ImageView
-        android:id="@+id/carImageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:padding="16dp"
-        android:src="@mipmap/car_0"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+
 
             <TextView
                 android:id="@+id/mainText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:padding="16dp"
+                android:padding="1dp"
                 android:layout_margin="16dp"
                 android:textColor="@android:color/holo_orange_dark"
                 tools:text="1000"
                 android:textSize="100sp"/>
 
          </LinearLayout>
+    <ImageView
+        android:id="@+id/carImageView"
+        android:layout_width="260dp"
+        android:layout_height="180dp"
+        android:padding="1dp"
+        android:layout_gravity="end"
+        android:src="@mipmap/car_0" />
 
 </LinearLayout>

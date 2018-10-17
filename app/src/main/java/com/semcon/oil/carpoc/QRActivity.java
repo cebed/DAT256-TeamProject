@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.content.Intent;
 public class QRActivity extends AppCompatActivity {
     Button backButton;
     Button backToStore;
+    ImageButton fbButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +80,31 @@ public class QRActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void facebookButton() {
+        fbButton = (ImageButton) findViewById(R.id.imageButton2);
+        backToStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(QRActivity.this);
+                builder.setTitle("Error");
+                builder.setMessage("\n" +
+                        "Comming Soon!");
+
+                builder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
     }
     public void storeButton(){
       backToStore = (Button) findViewById(R.id.bkStore);

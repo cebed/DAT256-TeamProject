@@ -98,6 +98,29 @@ public class Main2Activity extends AppCompatActivity {
 
                     AlertDialog dialog = builder.create();
                     dialog.show();
+                } else {
+                    {
+
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(Main2Activity.this);
+                        builder.setTitle("Balance dialog");
+                        builder.setMessage("\n" +
+                                "du har inte tillräckligt med poäng för att köpa!");
+                        builder.setPositiveButton("Back", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+
+                            }
+                        });
+
+
+
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+
+
+
                 }
 
 

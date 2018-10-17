@@ -16,6 +16,7 @@ public class QRActivity extends AppCompatActivity {
     Button backButton;
     Button backToStore;
     ImageButton fbButton;
+    ImageButton phoneButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +44,7 @@ public class QRActivity extends AppCompatActivity {
         homeButton();
         storeButton();
         facebookButton();
+        phoneButton();
 
 
     }
@@ -107,6 +109,32 @@ public class QRActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void phoneButton() {
+        phoneButton = (ImageButton) findViewById(R.id.imageButton);
+        phoneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(QRActivity.this);
+                builder.setTitle("Error");
+                builder.setMessage("\n" +
+                        "Comming Soon!");
+
+                builder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+    }
+
     public void storeButton(){
       backToStore = (Button) findViewById(R.id.bkStore);
         backToStore.setOnClickListener(new View.OnClickListener() {

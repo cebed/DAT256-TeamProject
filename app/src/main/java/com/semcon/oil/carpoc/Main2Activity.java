@@ -73,7 +73,7 @@ public class Main2Activity extends AppCompatActivity {
                             textView.setText((val - data.getPrice(position) + ""));
                             val -= data.getPrice(position);
 
-                            FileUtils.saveScore(getFilesDir(),val);
+                          FileUtils.saveScore(getFilesDir(),val);
 
                             String stringToPass  = "Product: "+ data.getNames(position);
                             int picturePass = data.getImages(position);

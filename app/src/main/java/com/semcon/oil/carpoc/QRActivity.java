@@ -29,9 +29,9 @@ public class QRActivity extends AppCompatActivity {
         TextView textView = (TextView)findViewById(R.id.boughtitem);
         TextView textView1 = (TextView)findViewById(R.id.datText);
         TextView priceView = (TextView)findViewById(R.id.productPrice);
-        priceView.setTextColor(Color.BLACK);
-        textView1.setTextColor(Color.BLACK);
-        textView.setTextColor(Color.BLACK);
+        priceView.setTextColor(Color.WHITE);
+        textView1.setTextColor(Color.WHITE);
+        textView.setTextColor(Color.WHITE);
 
         ImageView imageView = (ImageView)findViewById(R.id.pic);
         textView.setText(temp);

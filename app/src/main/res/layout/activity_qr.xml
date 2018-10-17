@@ -52,7 +52,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="412dp"
-            app:srcCompat="@drawable/cola" />
+            app:srcCompat="@drawable/kaffe" />
 
         <TextView
             android:id="@+id/productPrice"

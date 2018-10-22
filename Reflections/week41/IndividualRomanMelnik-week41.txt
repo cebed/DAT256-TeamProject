@@ -1,0 +1,11 @@
+- What do I want to learn or understand better?
+I want to learn how to implement location tracking, either with Google Maps or some other map service. I have seen another team's app, they use location in their features. Location tracking offers so many possibilities.
+
+- How can I help someone else, or the entire team, to learn something new?
+By reviewing their code in a group session, I can and do give feedback if I see something that can be improved.
+
+- What is my contribution towards the team’s application of Scrum?
+I participated in a stand-up meeting and a group programming session.
+
+- What is my contribution towards the team’s deliveries?
+I finally added a feature: a total score counter.
